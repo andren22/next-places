@@ -1,40 +1,64 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+NextPlaces is an application to search for the best places to work in more than 200 cities.
 
 ## Getting Started
 
-First, run the development server:
+The project includes a prefilled database using Pocketbase for simplicity. For production environments, a more robust and powerful database is recommended. To run the database, download the executable file from https://pocketbase.io/docs/, put it in the root of the project and run it with:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+.\pocketbase.exe serve` (Windows)
+./pocketbase serve` (Mac/Linux)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Now, just install the dependencies and run the server with:
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+npm run dev
+```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+Open [http://localhost:3000](http://localhost:3000) to use the application.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Challenge Assumptions
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+The following assumptions were made due to some unclear information on the challenge.
 
-## Learn More
+- The list of cities is obtained from the available capital cities of all the countries present in the REST Countries API https://restcountries.com/
+- The list of professions is a fixed list of 20 professions created as dummy data for the challenge.
+- The list of places is a fixed list of 10 generic places, different for each profession, created as dummy data for the challenge.
+- All cities have all professions with all places available.
+- The list of countries, cities and places does not change frequently.
 
-To learn more about Next.js, take a look at the following resources:
+## Application Architecture
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The application consist of:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- Prerendered static pages for each pair of city and profession, and for the landing page, for improved SEO optimization.
+- Client-side rendered page for the search results page. This allows to quickly search and view the results of repeated searches.
+- API endpoint for searching places. Under /api/search, this allows to serve only the search result items to the webpage.
+- Database. A database was implemented for having a single source of truth for the available places. Used for the prerendered pages and the search results. This allows to simulate a more production-like environment for the application and be prefilled with the necessary data.
 
-## Deploy on Vercel
+## Project Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `components`: Contains common reusable components for the application.
+- `pages`: Contains the webpages and API routes for the application, standard for next.js projects.
+- `pb_data` and `pb_migration`: These folders contain the preconfigured database information.
+- `public`: Default folder for Next.js projects. Not used in the application but left for compatibility with default error pages.
+- `types`: Contains the shared types relevant to all the application. In this case, only the Place type.
+- `utils/data`: Contains functions for supporting the database connection, and a script for initial populating the database, in case it is needed.
+- `utils/services`: Contains functions for communication with external services, such as the Countries API or the places source, used as a simulation of an external services, obtaining the data from a JSON file.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Dependencies
+
+- Bootstrap. It was chosen for quickly style components without too much configuration or fine-tuning.
+- Pocketbase. Chosen for its plug and play nature, allows having an easy set up and use database for simple projects.
+
+## Future work / Improvements
+
+- Implement unit tests
+- Pagination for search queries
+- Pagination for static pages
+- Implement proper error pages
+- Improve error handling
+- Implement logging for monitoring
+- Improve landing page for a more inviting user experience.
+- Secure authentication with the database.
